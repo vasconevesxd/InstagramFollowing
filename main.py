@@ -33,7 +33,84 @@ class InstaBot:
         print(not_following_back)
 
     def _get_names(self):
+
         sleep(2)
+
+        user_path = self.driver.find_elements_by_class_name('FPmhX')
+        
+        numb_users_class = len(user_path)
+
+
+        for x in range(numb_users_class):
+            
+            x += 1
+
+            users_list = x
+
+
+            self.driver.find_element_by_xpath('//a[@class="FPmhX notranslate  _0imsa "]' + '[' + str(x) + ']')\
+                .click()
+            
+            sleep(2)
+            
+            self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
+                .click()
+            
+            sleep(2)
+           
+        
+            last_ht, ht = 0, 1
+            
+            numb_following, y = 0, 0
+            
+            while last_ht != ht:
+                last_ht = ht
+
+                sleep(1)
+
+                numb_following += len(user_path)
+                
+                sleep(2)
+                
+                #print("=>Index: " + str(y) + "Valor Total" + str(numb_following))
+
+                while y != numb_following:               
+                    
+                    y += 1 
+
+                    k = y + 1
+                    print("=>" + str(k))
+                            
+                    scroll_box = self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]/ul/div/li" + '[' + str(k) + ']')
+
+                    ht = self.driver.execute_script('arguments[0].scrollIntoView(true);', scroll_box)
+
+                    sleep(3)
+                
+                    #self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]/ul/div/li" + '[' + str(y) + ']' + "/div/div[3]/button")\
+                    #    .click()
+        
+            sleep(2)    
+            
+            self.driver.get("https://instagram.com/username")
+                
+            sleep(2)
+                
+            self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
+                .click()
+
+                            
+
+
+
+
+               
+
+           
+
+
+
+        '''
         scroll_box = self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]")
         last_ht, ht = 0, 1
         while last_ht != ht:
@@ -51,11 +128,11 @@ class InstaBot:
             .click()
 
         return names
+        '''
 
 
 
 
 
-
-my_bot = InstaBot('username', '123123')
+my_bot = InstaBot('username', '1231234')
 my_bot.get_unfollowers('username')
