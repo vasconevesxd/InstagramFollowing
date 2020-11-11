@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 
 
@@ -28,110 +29,102 @@ class InstaBot:
         sleep(2)
         self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
             .click()
-        following = self._get_names()
-        not_following_back = [user for user in following if user]
-        print(not_following_back)
+        self._get_names()
+       
+
 
     def _get_names(self):
 
         sleep(2)
 
-        user_path = self.driver.find_elements_by_class_name('FPmhX')
-        
+        user_path = self.driver.find_elements_by_css_selector('.PZuss > li')
+        print(user_path)
         numb_users_class = len(user_path)
-
+        
 
         for x in range(numb_users_class):
             
             x += 1
 
-            users_list = x
+            if numb_users_class-1 == x:
+                
+                user_path = self.driver.find_elements_by_css_selector('.PZuss > li')
+                numb_users_class = len(user_path)
 
+            elem = self.driver.find_element_by_css_selector('.PZuss > li:nth-child(' + str(x) + ') a')
 
-            self.driver.find_element_by_xpath('//a[@class="FPmhX notranslate  _0imsa "]' + '[' + str(x) + ']')\
+            if elem.is_displayed():
+ 
+                self.driver.execute_script('arguments[0].scrollIntoView(true);', elem)
+                sleep(4)
+                print("=>Index: " + str(x) + "Valor Total" + str(numb_users_class))
+                self.driver.find_element_by_css_selector('.PZuss > li:nth-child(' + str(x) + ') a')\
                 .click()
-            
-            sleep(2)
+                print("Element found")
+                   
+            else:
+                print("Element not found")
+                    
+            sleep(3)
+
             
             self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
                 .click()
             
             sleep(2)
            
-        
-            last_ht, ht = 0, 1
+       
             
             numb_following, y = 0, 0
             
-            while last_ht != ht:
-                last_ht = ht
-
-                sleep(1)
-
-                numb_following += len(user_path)
+            user_path = self.driver.find_elements_by_css_selector('.PZuss > li')
+            numb_following = len(user_path)
+            print(numb_following)
                 
-                sleep(2)
+            sleep(2)
                 
-                #print("=>Index: " + str(y) + "Valor Total" + str(numb_following))
 
-                while y != numb_following:               
+            for y in range(numb_following):          
+                
+                y += 1  
+
+                if numb_following-1 == y:
+                    user_path = self.driver.find_elements_by_css_selector('.PZuss > li')
+                    numb_following = len(user_path)
+               
+
+                try:
+
+                    element = self.driver.find_element_by_css_selector('.PZuss > li:nth-child(' + str(y) + ') .sqdOP.L3NKy.y3zKF')
+
+                    if element.is_displayed():
+ 
+                        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+                        sleep(4)
+                        print("=>Index: " + str(y) + "Valor Total" + str(numb_following))
+                        self.driver.find_element_by_css_selector('.PZuss > li:nth-child(' + str(y) + ' ) button')\
+                        .click()
+                        print("Element found")
+                   
+                    else:
+                        print("Element not found")
                     
-                    y += 1 
+                        sleep(3)
 
-                    k = y + 1
-                    print("=>" + str(k))
-                            
-                    scroll_box = self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]/ul/div/li" + '[' + str(k) + ']')
-
-                    ht = self.driver.execute_script('arguments[0].scrollIntoView(true);', scroll_box)
-
-                    sleep(3)
+                except NoSuchElementException:
+                    print("No element found")
                 
-                    #self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]/ul/div/li" + '[' + str(y) + ']' + "/div/div[3]/button")\
-                    #    .click()
-        
+              
             sleep(2)    
             
             self.driver.get("https://instagram.com/username")
                 
-            sleep(2)
-                
+            sleep(3)
+
             self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
                 .click()
-
+            sleep(3)
                             
-
-
-
-
-               
-
-           
-
-
-
-        '''
-        scroll_box = self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[2]")
-        last_ht, ht = 0, 1
-        while last_ht != ht:
-            last_ht = ht
-            sleep(1)
-            ht = self.driver.execute_script("""
-                arguments[0].scrollTo(0, arguments[0].scrollHeight); 
-                return arguments[0].scrollHeight;
-                """, scroll_box)
-        links = scroll_box.find_elements_by_tag_name('a')
-        names = [name.text for name in links if name.text != '']
-        # close button
-
-        self.driver.find_element_by_xpath("/html/body/div[5]/div/div/div[1]/div/div[2]/button")\
-            .click()
-
-        return names
-        '''
-
-
-
 
 
 my_bot = InstaBot('username', '1231234')
