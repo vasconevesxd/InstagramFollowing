@@ -21,15 +21,15 @@ class InstaBot:
             .click()
         sleep(4)
 
-    def get_unfollowers(self, username):
+    def get_following(self, username):
 
         self.driver.get("https://instagram.com/" + username)
         sleep(2)
         self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
             .click()
-        self._get_names(username)
+        self._get_follow(username)
 
-    def _get_names(self, username):
+    def _get_follow(self, username):
 
         sleep(2)
 
@@ -121,4 +121,4 @@ class InstaBot:
 
 
 my_bot = InstaBot('username', '1231234')
-my_bot.get_unfollowers('username')
+my_bot.get_following('username')
