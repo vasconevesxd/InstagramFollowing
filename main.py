@@ -1,28 +1,43 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep
+from dotenv import load_dotenv #load_dotenv will be used to load the .env file to the environment variables.
+import os #os will be used to refer to those variables in the code. Let’s start with
 
+load_dotenv('.env') #load_dotenv. This will load the .env file.
+
+USERNAME = os.environ.get("USER")
+SECRET_KEY = os.environ.get("PASSWORD")
+CHROME_URL = os.environ.get("CHROME_URL")
 
 class InstaBot:
     def __init__(self, username, pw):
-        self.driver = webdriver.Chrome(executable_path='C:\chromedriver\chromedriver.exe')
+
+        self.driver = webdriver.Chrome(executable_path=CHROME_URL)
+
         self.username = username
         self.pw = pw
+
         self.driver.get("https://instagram.com")
         sleep(2)
+
         self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]")\
             .click()
         sleep(2)
+
+        #Login with your credentials
         self.driver.find_element_by_xpath("//input[@name=\"username\"]")\
             .send_keys(username)
         self.driver.find_element_by_xpath("//input[@name=\"password\"]")\
             .send_keys(pw)
         self.driver.find_element_by_xpath('//button[@type="submit"]')\
             .click()
+
         sleep(4)
 
     def get_following(self, username):
 
+        #Open your following list on your instagram profile
         self.driver.get("https://instagram.com/" + username)
         sleep(2)
         self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
@@ -49,6 +64,7 @@ class InstaBot:
             elem = self.driver.find_element_by_css_selector(
                 '.PZuss > li:nth-child(' + str(x) + ') a')
 
+            #if element exists scroll element by element and click on the user
             if elem.is_displayed():
 
                 self.driver.execute_script(
@@ -64,6 +80,7 @@ class InstaBot:
 
             sleep(3)
 
+           
             self.driver.find_element_by_xpath("//a[contains(@href,'/following')]")\
                 .click()
 
@@ -120,5 +137,5 @@ class InstaBot:
             sleep(3)
 
 
-my_bot = InstaBot('username', '1231234')
-my_bot.get_following('username')
+my_bot = InstaBot(USERNAME, SECRET_KEY)
+my_bot.get_following(USERNAME)
